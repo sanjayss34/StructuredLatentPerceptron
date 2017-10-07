@@ -11,9 +11,9 @@ import edu.illinois.cs.cogcomp.sl.core.SLParameters;
 import edu.illinois.cs.cogcomp.sl.core.SLProblem;
 
 public class SequenceLearn {
-    public static int ITER = 100;
+    public static int ITER = 20;
     public static int WV_SIZE = 10000;
-    public static int K = ITER/10;
+    public static int K = ITER/2;
 
     public static WeightVector avgWVs(ArrayList<WeightVector> wvs) {
         WeightVector wv = new WeightVector(WV_SIZE);
@@ -30,6 +30,7 @@ public class SequenceLearn {
         WeightVector wv = new WeightVector(WV_SIZE);
         List<WeightVector> all_wvs = new ArrayList<WeightVector>();
         for (int t = 0; t < ITER; t++) {
+            System.out.println(t);
             for (int i = 0; i < instances.size(); i++) {
                 SequenceInstance x = (SequenceInstance) instances.get(i);
                 SequenceLabel y = (SequenceLabel) structures.get(i);

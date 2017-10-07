@@ -47,12 +47,18 @@ public class SequenceIOManager {
 	
 	public static int numFeatures;
 	public static int numLabels;
-    public static int numLatent = 2;
+    public static int numLatent = 5;
     public static Map<String, Integer> labelIdMap;
 
 	public static SLProblem readProblem(String fname, Boolean fixFeatureNum) throws IOException, Exception {
         try {
             Scanner scanner = new Scanner(new File("data/glove.6B/glove.6B.200d.txt"));
+            labelIdMap = new HashMap<String, Integer>();
+            String[] labelSet = {"I", "O", "B"};
+            for (int i = 0; i < labelSet.length; i++) {
+                labelIdMap.put(labelSet[i], i);
+            }
+            numLabels= labelSet.length;
             Map<String, float[]> vocab = new HashMap<String, float[]>();
             int vecLength = 0;
             while (scanner.hasNextLine()) {
@@ -106,19 +112,32 @@ public class SequenceIOManager {
                         fvb.addFeature(currLength+i, vec[i]);
                     }
                     currLength += vecLength;
+                    int posIndex = posCount;
                     if (prevPos != null && pos.containsKey(prevPos)) {
-                        fvb.addFeature(currLength, pos.get(prevPos));
+                        posIndex = pos.get(prevPos);
                     }
-                    else {
-                        fvb.addFeature(currLength, posCount);
+                    for (int i = 0; i < posCount+1; i++) {
+                        if (i == posIndex) {
+                            fvb.addFeature(currLength+i, 1);
+                        }
+                        else {
+                            fvb.addFeature(currLength+i, 0);
+                        }
                     }
-                    currLength++;
+                    currLength += posCount+1;
+                    posIndex = posCount;
                     if (pos.containsKey(tokens[1])) {
-                        fvb.addFeature(currLength, pos.get(tokens[1]));
+                        posIndex = pos.get(tokens[1]);
                     }
-                    else {
-                        fvb.addFeature(currLength, posCount);
+                    for (int i = 0; i < posCount+1; i++) {
+                        if (i == posIndex) {
+                            fvb.addFeature(currLength+i, 1);
+                        }
+                        else {
+                            fvb.addFeature(currLength+i, 0);
+                        }
                     }
+                    currLength += posCount+1;
                     numFeatures = currLength;
                     prevWord = word;
                     prevPos = tokens[1];
@@ -140,11 +159,6 @@ public class SequenceIOManager {
                 }
             }
             scanner.close();
-            String[] labelSet = {"I", "O", "B"};
-            for (int i = 0; i < labelSet.length; i++) {
-                labelIdMap.put(labelSet[i], i);
-            }
-            numLabels= labelSet.length;
             return sp;
         }
         catch (IOException e) {

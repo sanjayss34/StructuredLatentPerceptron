@@ -52,13 +52,13 @@ public class SequenceInferenceSolver extends
 		int numBaseFeatures = SequenceIOManager.numFeatures;
 		
 		float[][] dpTable = new float[2][numOflabels*numLatent];
-		int[][] path = new int[numOfTokens][numOflabels];
+		int[][] path = new int[numOfTokens][numOflabels*numLatent];
 		
-		int offset = (numBaseFeatures+1) * numOflabels;
+		int offset = (numBaseFeatures+1) * numOflabels * numLatent;
 		
 		// Viterbi algorithm
 		for (int j = 0; j < numOflabels*numLatent; j++) {
-			float priorScore = wv.get(numBaseFeatures * numOflabels + j);
+			float priorScore = wv.get(numBaseFeatures * numOflabels*numLatent + j);
 			float zeroOrderScore = wv.dotProduct(seq.baseFeatures[0], j*numBaseFeatures);
             if ((gold != null) && (j/numLatent != goldLabeledSeq.tags[0])) {
                 zeroOrderScore = Float.NEGATIVE_INFINITY;
@@ -98,8 +98,11 @@ public class SequenceInferenceSolver extends
 		
 		latentTags[numOfTokens - 1] = maxTag;
 		
-		for (int i = numOfTokens - 1; i >= 1; i--) 
+		for (int i = numOfTokens - 1; i >= 1; i--) {
 			latentTags[i-1] = path[i][latentTags[i]];
+            // System.out.print(latentTags[i] + " ");
+        }
+        // System.out.println("");
         // Project latent variables onto label sequence
         /*int[] tags = new int[numOfTokens];
         for (int i = 0; i < numOfTokens; i++) {

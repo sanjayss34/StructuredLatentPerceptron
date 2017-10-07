@@ -37,6 +37,7 @@ public class MainClass {
 				throws Exception {
 			SLModel model = new SLModel();
 			SLProblem sp = SequenceIOManager.readProblem(trainingDataPath, false);
+            System.out.println("Num features: " + SequenceIOManager.numFeatures);
 			
 			// initialize the inference solver
             SequenceInferenceSolver infSolver = new SequenceInferenceSolver();
@@ -52,6 +53,7 @@ public class MainClass {
 			model.config.put("numFeatures", String.valueOf(SequenceIOManager.numFeatures));
 			model.config.put("numLabels", String.valueOf(SequenceIOManager.numLabels));
 			model.saveModel(modelPath);
+            System.out.println("Training Acc: " + Evaluator.evaluate(sp, model.wv, model.infSolver, null));
 		}
 		@CommandDescription(description="testSequenceModel modelPath testDataPath")
 		public static void testSequenceModel(String modelPath, String testDataPath) throws Exception{

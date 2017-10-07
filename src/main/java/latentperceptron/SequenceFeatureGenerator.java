@@ -55,6 +55,9 @@ public class SequenceFeatureGenerator extends AbstractFeatureGenerator {
 		int numOfLabels = SequenceIOManager.numLabels;
 		int emissionOffset = numBaseFeatures * numOfLabels * numLatent;
 		fv.addFeature(emissionOffset + tags[0], 1.0);
+        /*for (int i = 0; i < numLatent; i++) {
+		    fv.addFeature(emissionOffset + tags[0]*numLatent+i, 1.0);
+        }*/
 
 		// add transition features
 		/*int priorEmissionOffset = emissionOffset + numOfLabels;

@@ -54,7 +54,8 @@ public class Evaluator  implements ProgressReportFunction{
 			System.out.println("Iter " + numIterPerProgress*(i+1) + ": time " + runningTime.get(i)/1000 + " Acc: " + testAcc);
 		}
 	}
-	public static double evaluate(SLProblem sp, WeightVector wv, AbstractInferenceSolver infSolver, String outputFileName) throws Exception{
+	public static double evaluate(SLProblem sp, WeightVector wv, AbstractInferenceSolver aInfSolver, String outputFileName) throws Exception{
+        SequenceInferenceSolver infSolver = (SequenceInferenceSolver) aInfSolver;
 		int total = 0;
 		double acc = 0;
 		BufferedWriter writer = null;
@@ -65,8 +66,9 @@ public class Evaluator  implements ProgressReportFunction{
 
 			SequenceLabel gold = (SequenceLabel) sp.goldStructureList
 					.get(i);
-			SequenceLabel prediction = (SequenceLabel) infSolver
+			SequenceLabel latentPrediction = (SequenceLabel) infSolver
 					.getBestStructure(wv, sp.instanceList.get(i));
+            SequenceLabel prediction = (SequenceLabel) infSolver.projectLatent(latentPrediction);
 			if(outputFileName!=null){
 				for(int j=0; j< prediction.tags.length; j++){
 					writer.write(String.valueOf(prediction.tags[j]+1)+"\n");
