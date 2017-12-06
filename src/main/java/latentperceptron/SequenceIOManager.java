@@ -47,7 +47,7 @@ public class SequenceIOManager {
 	
 	public static int numFeatures;
 	public static int numLabels;
-    public static int numLatent = 5;
+    public static int numLatent = 6;
     public static Map<String, Integer> labelIdMap;
 
 	public static SLProblem readProblem(String fname, Boolean fixFeatureNum) throws IOException, Exception {
@@ -89,6 +89,10 @@ public class SequenceIOManager {
             List<String> currLabels = new ArrayList<String>();
             String prevWord = null;
             String prevPos = null;
+            /*String line = null;
+            if (scanner.hasNextLine()) {
+                line = scanner.nextLine();
+            }*/
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] tokens = line.split(" ");
@@ -138,13 +142,48 @@ public class SequenceIOManager {
                         }
                     }
                     currLength += posCount+1;
+                    /*if (!currFvbs.isEmpty()) {
+                        for (int i = 0; i < vec.length; i++) {
+                            currFvbs.get(currFvbs.size()-1).addFeature(currLength+i, vec[i]);
+                        }
+                        currLength += vec.length;
+                        for (int i = 0; i < posCount+1; i++) {
+                            if (i == posIndex) {
+                                currFvbs.get(currFvbs.size()-1).addFeature(currLength+i, 1);
+                            }
+                            else {
+                                currFvbs.get(currFvbs.size()-1).addFeature(currLength+i, 0);
+                            }
+                        }
+                        currLength += posCount+1;
+                    }*/
                     numFeatures = currLength;
                     prevWord = word;
                     prevPos = tokens[1];
                     currFvs.add(fvb.toFeatureVector());
+                    // currFvbs.add(fvb);
                     currLabels.add(tokens[2]);
                 }
                 else {
+                    /*if (!currFvbs.isEmpty()) {
+                        for (int i = 0; i < vecLength; i++) {
+                            currFvbs.get(currFvbs.size()-1).addFeature(currLength+i, 0);
+                        }
+                        currLength += vecLength;
+                        for (int i = 0; i < posCount+1; i++) {
+                            if (i == posCount) {
+                                currFvbs.get(currFvbs.size()-1).addFeature(currLength+i, 1);
+                            }
+                            else {
+                                currFvbs.get(currFvbs.size()-1).addFeature(currLength+i, 0);
+                            }
+                        }
+                        currLength += posCount+1;
+                    }*/
+                    /*List<IFeatureVector> currFvs = new ArrayList<IFeatureVector>();
+                    for (FeatureVectorBuffer v : currFvbs) {
+                        currFvs.add(v.toFeatureVector());
+                    }*/
                     SequenceInstance seq = new SequenceInstance(currFvs.toArray(new IFeatureVector[currFvs.size()]));
                     sp.instanceList.add(seq);
                     int[] labelArray = new int[currLabels.size()];

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-MEMORY="-Xmx4g"
+MEMORY="-Xmx5g"
 
 CP="./config/:./target/classes/:./target/dependency/*"
 

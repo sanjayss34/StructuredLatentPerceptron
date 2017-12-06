@@ -58,6 +58,9 @@ public class Evaluator  implements ProgressReportFunction{
         SequenceInferenceSolver infSolver = (SequenceInferenceSolver) aInfSolver;
 		int total = 0;
 		double acc = 0;
+        int correctPos = 0;
+        int totalPos = 0;
+        int predictedPos = 0;
 		BufferedWriter writer = null;
 		if(outputFileName!=null){
 			writer = new BufferedWriter(new FileWriter(outputFileName));
@@ -74,9 +77,24 @@ public class Evaluator  implements ProgressReportFunction{
 					writer.write(String.valueOf(prediction.tags[j]+1)+"\n");
 				}
 			}
-            	
 			for (int j = 0; j < prediction.tags.length; j++) {
 				total += 1.0;
+                if (prediction.tags[j] == SequenceIOManager.labelIdMap.get("B")) {
+                    predictedPos++;
+                    boolean flag = true;
+                    flag = flag && (gold.tags[j] == SequenceIOManager.labelIdMap.get("B"));
+                    int c = j+1;
+                    while (c < prediction.tags.length && prediction.tags[c] == SequenceIOManager.labelIdMap.get("I")) {
+                        flag = flag && (gold.tags[c] == SequenceIOManager.labelIdMap.get("I"));
+                        c++;
+                    }
+                    if (flag) {
+                        correctPos++;
+                    }
+                }
+                if (gold.tags[j] == SequenceIOManager.labelIdMap.get("B")) {
+                    totalPos++;
+                }
 				if (prediction.tags[j] == gold.tags[j]){
 					acc += 1.0;
 				}
@@ -85,8 +103,11 @@ public class Evaluator  implements ProgressReportFunction{
 		if(writer!=null){
 			writer.close();
 		}
-		return acc/total;
-
+		// return acc/total;
+        double precision = ((double) correctPos)/predictedPos;
+        double recall = ((double) correctPos)/totalPos;
+        // Return F-measure
+        return 2*precision*recall/(precision+recall);
 	}
 	public List<WeightVector> getWvList() {
 		// TODO Auto-generated method stub
