@@ -22,7 +22,7 @@ public class SequenceLearn {
         for (int i = 0; i < wvs.size(); i++) {
             WeightVector wv_i = new WeightVector(WV_SIZE);
             wv_i.addDenseVector(wvs.get(i));
-            wv_i.scale(i+1);
+            wv_i.scale(wvs.size()-i);
             wv.addDenseVector(wv_i);
         }
         wv.scale(1.0/(wvs.size()*(wvs.size()+1)/2));
