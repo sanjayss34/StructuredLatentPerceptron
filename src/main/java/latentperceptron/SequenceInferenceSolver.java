@@ -30,7 +30,8 @@ import edu.illinois.cs.cogcomp.sl.util.WeightVector;
 public class SequenceInferenceSolver extends
 		AbstractInferenceSolver {
 
-	private static final long serialVersionUID = 1L;	
+	private static final long serialVersionUID = 1L;
+    public float recentScore = Float.NEGATIVE_INFINITY;
 
 	@Override
 	public Object clone(){
@@ -92,9 +93,13 @@ public class SequenceInferenceSolver extends
 		int[] latentTags = new int[numOfTokens];
 		
 		int maxTag = 0;
-		for (int i = 0; i < numOflabels*numLatent; i++)
-			if (dpTable[(numOfTokens - 1)%2][i] > dpTable[(numOfTokens - 1)%2][maxTag]) 
+        this.recentScore = Float.NEGATIVE_INFINITY;
+		for (int i = 0; i < numOflabels*numLatent; i++) {
+			if (dpTable[(numOfTokens - 1)%2][i] > recentScore) {
 				maxTag = i;
+                this.recentScore = dpTable[(numOfTokens - 1)%2][i];
+            }
+        }
 		
 		latentTags[numOfTokens - 1] = maxTag;
 		

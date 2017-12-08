@@ -53,7 +53,7 @@ public class MainClass {
 			model.config.put("numFeatures", String.valueOf(SequenceIOManager.numFeatures));
 			model.config.put("numLabels", String.valueOf(SequenceIOManager.numLabels));
 			model.saveModel(modelPath);
-            System.out.println("Training Acc: " + Evaluator.evaluate(sp, model.wv, model.infSolver, null));
+            System.out.println("Training F-measure: " + Evaluator.evaluate(sp, model.wv, model.infSolver, null));
 		}
 		@CommandDescription(description="testSequenceModel modelPath testDataPath")
 		public static void testSequenceModel(String modelPath, String testDataPath) throws Exception{
@@ -68,7 +68,7 @@ public class MainClass {
 			SequenceIOManager.numLabels = Integer.valueOf(model.config.get("numLabels"));
 			SLProblem sp = SequenceIOManager.readProblem(testDataPath, true);
 			
-			System.out.println("Acc = " + Evaluator.evaluate(sp, model.wv, model.infSolver,predictionFileName));
+			System.out.println("F-measure = " + Evaluator.evaluate(sp, model.wv, model.infSolver,predictionFileName));
 		}	
 	}
 

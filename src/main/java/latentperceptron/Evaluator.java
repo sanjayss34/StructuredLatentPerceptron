@@ -103,6 +103,7 @@ public class Evaluator  implements ProgressReportFunction{
 		if(writer!=null){
 			writer.close();
 		}
+        System.out.println("Accuracy: " + acc/total);
 		// return acc/total;
         double precision = ((double) correctPos)/predictedPos;
         double recall = ((double) correctPos)/totalPos;

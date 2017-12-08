@@ -14,7 +14,7 @@ import edu.illinois.cs.cogcomp.sl.core.SLProblem;
 public class SequenceLearn {
     public static int ITER = 40;
     public static int WV_SIZE = 10000;
-    public static int K = ITER/4;
+    public static int K = 5;
     public static double alpha = 0.5;
 
     public static WeightVector avgWVs(ArrayList<WeightVector> wvs) {
@@ -22,7 +22,7 @@ public class SequenceLearn {
         for (int i = 0; i < wvs.size(); i++) {
             WeightVector wv_i = new WeightVector(WV_SIZE);
             wv_i.addDenseVector(wvs.get(i));
-            wv_i.scale(wvs.size()-i);
+            wv_i.scale(i+1);
             wv.addDenseVector(wv_i);
         }
         wv.scale(1.0/(wvs.size()*(wvs.size()+1)/2));
@@ -98,7 +98,7 @@ public class SequenceLearn {
                 SequenceLabel y = (SequenceLabel) structures.get(i);
                 SequenceLabel h = (SequenceLabel) infSolver.getBestStructure(wv, x);
                 SequenceLabel y_hat = (SequenceLabel) infSolver.projectLatent(h);
-                if (!y.equals(y_hat)) {
+                if (!y.equals(y_hat)) { // || infSolver.recentScore < 15000) {
                     SequenceLabel h_star = (SequenceLabel) infSolver.getLossAugmentedBestStructure(wv, x, y);
                     wv.addSparseFeatureVector(fg.getFeatureVector(x, h_star), 1);
                     wv.addSparseFeatureVector(fg.getFeatureVector(x, h), -1);

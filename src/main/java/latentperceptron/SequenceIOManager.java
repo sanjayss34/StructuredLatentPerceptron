@@ -47,12 +47,12 @@ public class SequenceIOManager {
 	
 	public static int numFeatures;
 	public static int numLabels;
-    public static int numLatent = 6;
+    public static int numLatent = 5;
     public static Map<String, Integer> labelIdMap;
 
 	public static SLProblem readProblem(String fname, Boolean fixFeatureNum) throws IOException, Exception {
         try {
-            Scanner scanner = new Scanner(new File("data/glove.6B/glove.6B.200d.txt"));
+            Scanner scanner = new Scanner(new File("data/glove.6B/glove.6B.300d.txt"));
             labelIdMap = new HashMap<String, Integer>();
             String[] labelSet = {"I", "O", "B"};
             for (int i = 0; i < labelSet.length; i++) {
@@ -87,6 +87,8 @@ public class SequenceIOManager {
             SLProblem sp = new SLProblem();
             List<IFeatureVector> currFvs = new ArrayList<IFeatureVector>();
             List<String> currLabels = new ArrayList<String>();
+            FeatureVectorBuffer prevFvb = null;
+            int preNext = 0;
             String prevWord = null;
             String prevPos = null;
             /*String line = null;
@@ -142,44 +144,52 @@ public class SequenceIOManager {
                         }
                     }
                     currLength += posCount+1;
-                    /*if (!currFvbs.isEmpty()) {
+                    preNext = currLength;
+                    if (prevFvb != null) {
                         for (int i = 0; i < vec.length; i++) {
-                            currFvbs.get(currFvbs.size()-1).addFeature(currLength+i, vec[i]);
+                            prevFvb.addFeature(currLength+i, vec[i]);
                         }
                         currLength += vec.length;
                         for (int i = 0; i < posCount+1; i++) {
                             if (i == posIndex) {
-                                currFvbs.get(currFvbs.size()-1).addFeature(currLength+i, 1);
+                                prevFvb.addFeature(currLength+i, 1);
                             }
                             else {
-                                currFvbs.get(currFvbs.size()-1).addFeature(currLength+i, 0);
+                                prevFvb.addFeature(currLength+i, 0);
                             }
                         }
                         currLength += posCount+1;
-                    }*/
+                    }
                     numFeatures = currLength;
                     prevWord = word;
                     prevPos = tokens[1];
-                    currFvs.add(fvb.toFeatureVector());
+                    // currFvs.add(fvb.toFeatureVector());
+                    if (prevFvb != null) {
+                        currFvs.add(prevFvb.toFeatureVector());
+                    }
+                    prevFvb = fvb;
                     // currFvbs.add(fvb);
                     currLabels.add(tokens[2]);
                 }
                 else {
-                    /*if (!currFvbs.isEmpty()) {
+                    if (prevFvb != null) {
+                        currLength = preNext;
                         for (int i = 0; i < vecLength; i++) {
-                            currFvbs.get(currFvbs.size()-1).addFeature(currLength+i, 0);
+                            prevFvb.addFeature(currLength+i, 0);
                         }
                         currLength += vecLength;
                         for (int i = 0; i < posCount+1; i++) {
                             if (i == posCount) {
-                                currFvbs.get(currFvbs.size()-1).addFeature(currLength+i, 1);
+                                prevFvb.addFeature(currLength+i, 1);
                             }
                             else {
-                                currFvbs.get(currFvbs.size()-1).addFeature(currLength+i, 0);
+                                prevFvb.addFeature(currLength+i, 0);
                             }
                         }
                         currLength += posCount+1;
-                    }*/
+                        currFvs.add(prevFvb.toFeatureVector());
+                    }
+                    prevFvb = null;
                     /*List<IFeatureVector> currFvs = new ArrayList<IFeatureVector>();
                     for (FeatureVectorBuffer v : currFvbs) {
                         currFvs.add(v.toFeatureVector());
