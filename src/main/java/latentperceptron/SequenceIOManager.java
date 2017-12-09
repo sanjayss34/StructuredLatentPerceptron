@@ -52,7 +52,7 @@ public class SequenceIOManager {
 
 	public static SLProblem readProblem(String fname, Boolean fixFeatureNum) throws IOException, Exception {
         try {
-            Scanner scanner = new Scanner(new File("data/glove.6B/glove.6B.300d.txt"));
+            Scanner scanner = new Scanner(new File("data/glove.6B/glove.6B.50d.txt"));
             labelIdMap = new HashMap<String, Integer>();
             String[] labelSet = {"I", "O", "B"};
             for (int i = 0; i < labelSet.length; i++) {
@@ -144,7 +144,7 @@ public class SequenceIOManager {
                         }
                     }
                     currLength += posCount+1;
-                    /*preNext = currLength;
+                    preNext = currLength;
                     if (prevFvb != null) {
                         for (int i = 0; i < vec.length; i++) {
                             prevFvb.addFeature(currLength+i, vec[i]);
@@ -159,20 +159,20 @@ public class SequenceIOManager {
                             }
                         }
                         currLength += posCount+1;
-                    }*/
+                    }
                     numFeatures = currLength;
                     prevWord = word;
                     prevPos = tokens[1];
-                    currFvs.add(fvb.toFeatureVector());
-                    /*if (prevFvb != null) {
+                    // currFvs.add(fvb.toFeatureVector());
+                    if (prevFvb != null) {
                         currFvs.add(prevFvb.toFeatureVector());
-                    }*/
+                    }
                     prevFvb = fvb;
                     // currFvbs.add(fvb);
                     currLabels.add(tokens[2]);
                 }
                 else {
-                    /*if (prevFvb != null) {
+                    if (prevFvb != null) {
                         currLength = preNext;
                         for (int i = 0; i < vecLength; i++) {
                             prevFvb.addFeature(currLength+i, 0);
@@ -189,7 +189,7 @@ public class SequenceIOManager {
                         currLength += posCount+1;
                         currFvs.add(prevFvb.toFeatureVector());
                     }
-                    prevFvb = null;*/
+                    prevFvb = null;
                     /*List<IFeatureVector> currFvs = new ArrayList<IFeatureVector>();
                     for (FeatureVectorBuffer v : currFvbs) {
                         currFvs.add(v.toFeatureVector());
